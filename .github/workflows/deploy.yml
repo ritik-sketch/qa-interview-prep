@@ -1,0 +1,32 @@
+name: Deploy site
+
+# Har push pe site rebuild hoke live ho jayegi.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:        # GitHub UI se manually bhi chala sakte ho
+
+permissions:
+  contents: write           # gh-pages branch pe likhne ke liye
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # Build dependencies cache — dobara push pe tez chalega
+      - uses: actions/cache@v4
+        with:
+          key: mkdocs-${{ hashFiles('requirements.txt') }}
+          path: ~/.cache/pip
+
+      - run: pip install -r requirements.txt
+
+      # gh-pages branch pe deploy karta hai. --force isliye ki
+      # generated output hai, uski history rakhne ka koi matlab nahi.
+      - run: mkdocs gh-deploy --force

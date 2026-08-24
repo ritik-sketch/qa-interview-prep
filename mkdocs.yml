@@ -1,0 +1,95 @@
+site_name: QA Engineering Notes
+site_description: Deep-dive notes on QA automation, Python, DSA and test engineering.
+site_author: Ritik Chaturvedi
+
+# TODO: apna GitHub username daalo (dono jagah "ritik" ki jagah)
+site_url: https://ritik.github.io/qa-notes/
+repo_url: https://github.com/ritik/qa-notes
+repo_name: qa-notes
+edit_uri: ""
+
+theme:
+  name: material
+  language: en
+  palette:
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: teal
+      accent: deep orange
+      toggle:
+        icon: material/weather-night
+        name: Dark mode
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: teal
+      accent: deep orange
+      toggle:
+        icon: material/weather-sunny
+        name: Light mode
+  features:
+    - navigation.instant        # SPA-style page loads
+    - navigation.tracking       # URL updates as you scroll
+    - navigation.top            # back-to-top button
+    - navigation.indexes
+    - toc.follow                # right-hand TOC follows your scroll
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy         # copy button on every code block
+    - content.tooltips
+  icon:
+    repo: fontawesome/brands/github
+
+markdown_extensions:
+  - admonition                  # note/warning callout boxes
+  - pymdownx.details
+  - pymdownx.superfences        # nested code blocks
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - tables
+  - footnotes
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true           # clickable anchor on every heading
+      toc_depth: 3
+
+plugins:
+  - search:
+      lang: en
+
+nav:
+  - Home: index.md
+  - Foundations:
+      - QA Fundamentals: qa-fundamentals.md
+      - Debugging & RCA: debugging-rca.md
+  - Programming:
+      - Python — Zero to Advanced: python.md
+      - DSA Patterns & Problems: dsa-patterns.md
+      - Algorithms Deep Dive: algorithms.md
+  - Testing Craft:
+      - API Testing: api-testing.md
+      - Database & SQL: database-sql.md
+      - Playwright with Python: playwright-python.md
+  - Engineering:
+      - CI/CD & Git: cicd-git.md
+      - OOP, Architecture & System Design: oop-architecture.md
+      - AI & GenAI Testing: ai-genai-testing.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/ritik
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/in/your-handle
+  generator: false
