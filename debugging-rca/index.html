@@ -1,0 +1,2333 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Deep-dive notes on QA automation, Python, DSA and test engineering.">
+      
+      
+        <meta name="author" content="Ritik Chaturvedi">
+      
+      
+        <link rel="canonical" href="https://ritik-sketch.github.io/qa-interview-prep/debugging-rca/">
+      
+      
+        <link rel="prev" href="../qa-fundamentals/">
+      
+      
+        <link rel="next" href="../python/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.44">
+    
+    
+      
+        <title>Debugging & RCA - QA Engineering Notes</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.0253249f.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="deep-orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#debugging-rca-engineering-depth-sdet-interview-prep" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="QA Engineering Notes" class="md-header__button md-logo" aria-label="QA Engineering Notes" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            QA Engineering Notes
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Debugging & RCA
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="deep-orange"  aria-label="Dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="deep-orange"  aria-label="Light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/ritik-sketch/qa-interview-prep" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    qa-interview-prep
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="QA Engineering Notes" class="md-nav__button md-logo" aria-label="QA Engineering Notes" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    QA Engineering Notes
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/ritik-sketch/qa-interview-prep" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    qa-interview-prep
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Foundations
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Foundations
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../qa-fundamentals/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    QA Fundamentals
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Debugging & RCA
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Debugging & RCA
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      Contents
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Programming
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Programming
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../python/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Python — Zero to Advanced
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dsa-patterns/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DSA Patterns & Problems
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../algorithms/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Algorithms Deep Dive
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Testing Craft
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Testing Craft
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-testing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API Testing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../database-sql/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Database & SQL
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../playwright-python/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Playwright with Python
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Engineering
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Engineering
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cicd-git/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CI/CD & Git
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../oop-architecture/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OOP, Architecture & System Design
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ai-genai-testing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    AI & GenAI Testing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      Contents
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="debugging-rca-engineering-depth-sdet-interview-prep">Debugging, RCA &amp; Engineering Depth — SDET Interview Prep<a class="headerlink" href="#debugging-rca-engineering-depth-sdet-interview-prep" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>Format:</strong> samjhaane ke liye Hinglish, aur jo aap interviewer ke saamne <strong>bolenge</strong>
+wo English mein — <code>&gt; **Interview answer:**</code> blockquotes mein.</p>
+<p>Ye doc cover karta hai: <strong>Debugging + RCA</strong>, <strong>Web/System fundamentals</strong>,
+<strong>Security testing</strong>, <strong>Performance testing</strong>, aur <strong>Observability</strong>.</p>
+<p>Interviewer ke liye ye sabse revealing area hai — kyunki yahan pata chalta hai ki
+aap sirf test likhte ho ya <strong>problem solve</strong> karte ho.</p>
+</blockquote>
+<hr />
+<h2 id="contents">Contents<a class="headerlink" href="#contents" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Topic</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Debugging mindset — RCA ka poora flow</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Chrome DevTools — QA ka primary weapon</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Logs aur stack traces padhna</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Web fundamentals — request lifecycle</td>
+</tr>
+<tr>
+<td>5</td>
+<td>HTTP, cookies, sessions, CORS</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Infrastructure — DNS, load balancer, CDN, cache</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Security testing</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Performance testing</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Observability</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Senior scenario questions</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Quick revision</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="1-debugging-mindset-rca-ka-poora-flow">1. Debugging mindset — RCA ka poora flow<a class="headerlink" href="#1-debugging-mindset-rca-ka-poora-flow" title="Permanent link">&para;</a></h1>
+<h2 id="11-debugging-aur-bug-dhoondhna-alag-cheez-hai">1.1 Debugging aur "bug dhoondhna" alag cheez hai<a class="headerlink" href="#11-debugging-aur-bug-dhoondhna-alag-cheez-hai" title="Permanent link">&para;</a></h2>
+<p>Junior QA: <em>"Ye kaam nahi kar raha"</em> → dev ko de diya.
+Senior QA: <em>"Ye kaam nahi kar raha </em><em>kyunki</em><em> X, aur uska proof ye raha — <code>file:line</code>"</em></p>
+<p>Farak sirf effort ka nahi hai. Dev ko jo cheez chahiye wo hai <strong>reproduction + narrowing</strong>.
+Aap jitna narrow karke doge, fix utna jaldi hoga.</p>
+<h2 id="12-rca-ka-layered-flow-ye-yaad-rakho">1.2 RCA ka layered flow — ye yaad rakho<a class="headerlink" href="#12-rca-ka-layered-flow-ye-yaad-rakho" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>BUG dikha
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  ↓
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>1. REPRODUCE          — kya ye consistently hota hai? kis condition mein?
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>  ↓
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>2. BROWSER CONSOLE    — koi JS error? warning?
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>  ↓
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>3. NETWORK TAB        — request gayi? kya bheja? kya aaya? status?
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>  ↓
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>4. API DIRECT         — UI hataao, seedha API call karo. Wahan bhi hota hai?
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>  ↓
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>5. BACKEND LOGS       — us request ka trace, exception, stack
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>  ↓
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>6. DATABASE           — actual data kya hai? UI jo dikha raha hai wo sach hai?
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>  ↓
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>7. ROOT CAUSE         — file:line tak pahuncho
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>  ↓
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>8. FIX VERIFICATION   — fix ke baad wahi steps dobara
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>  ↓
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>9. REGRESSION         — is fix se aur kya toot sakta tha? wo bhi test karo
+</span></code></pre></div>
+<p><strong>Har layer ek sawaal ka jawab deti hai:</strong> "problem is layer tak pahunchi bhi thi ya nahi?"</p>
+<p>Agar network tab mein request hi nahi gayi → problem <strong>frontend</strong> mein hai.
+Agar request gayi, 200 aaya, par UI galat → problem <strong>rendering ya DTO mapping</strong> mein hai.
+Agar API ne hi galat diya → problem <strong>backend</strong> mein hai.
+Agar backend theek hai par DB mein data galat → problem <strong>write path</strong> mein hai.</p>
+<blockquote>
+<p><strong>Interview answer:</strong>
+"I work down the stack in layers, and each layer answers one question: did the problem
+reach this layer or not. If the network tab shows no request, it's a frontend problem and
+I stop there. If the request went out and came back 200 but the screen is wrong, it's
+rendering or DTO mapping. If the API itself returned wrong data, I go to the backend logs
+and then the database. The point of the sequence is that each step eliminates half the
+stack, so by the time I file the bug the developer has a narrowed location rather than a
+screenshot."</p>
+</blockquote>
+<h2 id="13-reproduce-nahi-ho-raha-kya-karein">1.3 Reproduce nahi ho raha — kya karein<a class="headerlink" href="#13-reproduce-nahi-ho-raha-kya-karein" title="Permanent link">&para;</a></h2>
+<p>Ye interview mein poochha jaata hai aur zyadatar log kamzor jawab dete hain.</p>
+<p><strong>Variables jo alag ho sakte hain:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Kaise check karein</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>User / role / permissions</td>
+<td>Same user se try karo</td>
+</tr>
+<tr>
+<td>Data state</td>
+<td>Us specific record pe try karo, naye pe nahi</td>
+</tr>
+<tr>
+<td>Browser / version</td>
+<td>Same browser, same version</td>
+</tr>
+<tr>
+<td>Screen size</td>
+<td>Responsive breakpoint pe bug ho sakta hai</td>
+</tr>
+<tr>
+<td>Timing / race</td>
+<td>Slow network throttle karke try karo</td>
+</tr>
+<tr>
+<td>Cache / stale session</td>
+<td>Hard reload, incognito</td>
+</tr>
+<tr>
+<td>Feature flag</td>
+<td>Us user pe flag on hai?</td>
+</tr>
+<tr>
+<td>Timezone / locale</td>
+<td>Date bugs yahan chhupte hain</td>
+</tr>
+<tr>
+<td>Concurrency</td>
+<td>Do tab kholke saath mein karo</td>
+</tr>
+<tr>
+<td>Environment</td>
+<td>Staging pe nahi, prod pe ho sakta hai</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Aur sabse important — evidence collect karo:</strong>
+- Session replay (PostHog) — user ne actually kya kiya
+- Error tracking (Sentry/Rollbar) — kitni baar hua, kaunse users pe
+- Server logs us timestamp ke aas-paas
+- Correlation ID agar hai</p>
+<blockquote>
+<p><strong>Interview answer:</strong>
+"First I stop assuming it's not real — 'not reproducible' usually means 'I haven't found the
+variable yet'. I go back to the reporter for the exact user, record, timestamp and browser,
+because those four resolve most cases. Then I work through the variables that differ between
+their run and mine: data state, permissions, feature flags, timezone, screen size, and
+concurrency. If I still can't reproduce it, I don't close it — I add instrumentation.
+Session replay and error tracking usually show me what I couldn't reproduce by hand, and an
+error-rate count tells me whether it's one user or five hundred."</p>
+<p><strong>[REAL]</strong> Aapke Project Sales verification mein ek "page khaali hai" jaisa case tha — page
+actually theek tha, sirf wait 9 second kam tha. Lesson: <strong>"kaam nahi kar raha" ko verify karo,
+maan mat lo.</strong> Pehle DOM dump kiya, buttons list kiye, network calls dekhe — tab pata chala.</p>
+</blockquote>
+<h2 id="14-narrowing-techniques">1.4 Narrowing techniques<a class="headerlink" href="#14-narrowing-techniques" title="Permanent link">&para;</a></h2>
+<p><strong>Binary search on the flow</strong> — 12-step flow mein bug hai? Step 6 pe check karo. Theek hai to
+7-12 mein hai, warna 1-5 mein. 12 steps → 4 checks.</p>
+<p><strong>Binary search on commits</strong> — <code>git bisect</code>. Kaunsa commit toota, 100 commits mein 7 checks.</p>
+<p><strong>Isolate the layer</strong> — UI hata ke API se karo. API theek hai → UI ka bug.</p>
+<p><strong>Minimize the repro</strong> — 15-step repro ko 3-step banao. Aksar minimize karte-karte hi root
+cause mil jaata hai.</p>
+<p><strong>Differential debugging</strong> — jo case kaam karta hai aur jo nahi, unke beech ka <strong>exact farak</strong>
+dhoondho. Ek supplier pe kaam karta hai, doosre pe nahi? Un dono records ko compare karo.</p>
+<hr />
+<h1 id="2-chrome-devtools-qa-ka-primary-weapon">2. Chrome DevTools — QA ka primary weapon<a class="headerlink" href="#2-chrome-devtools-qa-ka-primary-weapon" title="Permanent link">&para;</a></h1>
+<p>Ye poochha jaata hai: <em>"DevTools mein kya-kya use karte ho?"</em></p>
+<h2 id="21-network-tab-sabse-important">2.1 Network tab — sabse important<a class="headerlink" href="#21-network-tab-sabse-important" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Kya dekhein</th>
+<th>Kyun</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Status</strong></td>
+<td>200/400/401/403/500 — layer identify karta hai</td>
+</tr>
+<tr>
+<td><strong>Request payload</strong></td>
+<td>Frontend ne actually kya bheja? Aksar bug yahin hota hai</td>
+</tr>
+<tr>
+<td><strong>Response body</strong></td>
+<td>Backend ne kya diya? UI se match karta hai?</td>
+</tr>
+<tr>
+<td><strong>Request headers</strong></td>
+<td>Auth token gaya? Content-Type sahi hai?</td>
+</tr>
+<tr>
+<td><strong>Response headers</strong></td>
+<td>Cache-Control, Set-Cookie, CORS headers</td>
+</tr>
+<tr>
+<td><strong>Timing breakdown</strong></td>
+<td>Queueing / DNS / TCP / TTFB / Download — kahan slow hai</td>
+</tr>
+<tr>
+<td><strong>Initiator</strong></td>
+<td>Ye request kis code se gayi</td>
+</tr>
+<tr>
+<td><strong>Size</strong></td>
+<td>Payload bada to nahi</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Useful filters:</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Filter: XHR/Fetch        — sirf API calls, assets nahi
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>status-code:500          — sirf errors
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>larger-than:1M           — bade payloads
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>-.png -.jpg              — images hataao
+</span></code></pre></div></p>
+<p><strong>Throttling</strong> — "Slow 3G" select karke loading states aur race conditions test karo.
+Bahut saare timing bugs sirf yahan dikhte hain.</p>
+<p><strong>Preserve log</strong> — navigation ke baad bhi requests dikhengi. Redirect flows ke liye zaroori.</p>
+<h2 id="22-console-tab">2.2 Console tab<a class="headerlink" href="#22-console-tab" title="Permanent link">&para;</a></h2>
+<div class="language-javascript highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1">// Errors — red. Warnings — yellow.</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="c1">// Filter se sirf errors dekho</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1">// Useful console commands QA ke liye:</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="nb">document</span><span class="p">.</span><span class="nx">querySelectorAll</span><span class="p">(</span><span class="s2">"button"</span><span class="p">).</span><span class="nx">length</span><span class="w">          </span><span class="c1">// locator verify karo</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s2">"#email"</span><span class="p">).</span><span class="nx">readOnly</span><span class="w">            </span><span class="c1">// readOnly hai?</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s2">"#btn"</span><span class="p">).</span><span class="nx">disabled</span><span class="w">              </span><span class="c1">// disabled hai?</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="nx">getEventListeners</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s2">"#btn"</span><span class="p">))</span><span class="w">    </span><span class="c1">// handler laga hai? (Chrome only)</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="nx">localStorage</span><span class="w">                                          </span><span class="c1">// storage dekho</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="nb">document</span><span class="p">.</span><span class="nx">cookie</span><span class="w">                                       </span><span class="c1">// cookies</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="nx">performance</span><span class="p">.</span><span class="nx">getEntriesByType</span><span class="p">(</span><span class="s2">"navigation"</span><span class="p">)[</span><span class="mf">0</span><span class="p">]</span><span class="w">         </span><span class="c1">// page timing</span>
+</span></code></pre></div>
+<blockquote>
+<p><strong>[REAL]</strong> Aapke date-picker bug mein exactly yahi kiya tha — live page pe JS chalake
+pata kiya ki input <code>readOnly: true</code> hai aur calendar grid mein <strong>11 duplicate day numbers</strong>
+hain. Wo insight sirf DOM inspect karke mila, guess se nahi.</p>
+</blockquote>
+<h2 id="23-application-tab">2.3 Application tab<a class="headerlink" href="#23-application-tab" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Cookies</strong> — value, domain, path, Expires, HttpOnly, Secure, SameSite</li>
+<li><strong>Local/Session Storage</strong> — token yahan hai? kya-kya store ho raha hai?</li>
+<li><strong>Service Workers</strong> — stale cache ka common culprit</li>
+<li><strong>Clear storage</strong> — clean state se test karo</li>
+</ul>
+<p><strong>Security angle:</strong> agar auth token <code>localStorage</code> mein hai to wo <strong>XSS se churaya ja sakta
+hai</strong>. <code>HttpOnly</code> cookie safer hai. Ye batana interview mein strong hai.</p>
+<h2 id="24-sources-aur-performance">2.4 Sources aur Performance<a class="headerlink" href="#24-sources-aur-performance" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Sources</strong> — breakpoints laga sakte ho, <code>debugger</code> statement, call stack dekho</li>
+<li><strong>Performance</strong> — page load profile, long tasks, layout thrashing</li>
+<li><strong>Lighthouse</strong> — performance, accessibility, SEO, best practices ka automated audit</li>
+</ul>
+<blockquote>
+<p><strong>Interview answer:</strong>
+"The network tab is where I spend most of my time — the request payload in particular,
+because a surprising number of 'backend bugs' turn out to be the frontend sending the wrong
+thing. I also use throttling deliberately: a lot of race conditions only appear on a slow
+connection, and if I can reproduce one on Slow 3G I've turned an intermittent report into a
+deterministic one. On the console side I use it to verify locator assumptions before I write
+them into a test — checking whether an element is actually readOnly or disabled takes two
+seconds and saves an hour of chasing a flaky test."</p>
+</blockquote>
+<hr />
+<h1 id="3-logs-aur-stack-traces-padhna">3. Logs aur stack traces padhna<a class="headerlink" href="#3-logs-aur-stack-traces-padhna" title="Permanent link">&para;</a></h1>
+<h2 id="31-stack-trace-kaise-padhein">3.1 Stack trace kaise padhein<a class="headerlink" href="#31-stack-trace-kaise-padhein" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>com.ether.exception.BusinessLogicException: Cannot accept estimate
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    at com.ether.sales.service.SalesEstimateService.approveEstimate(SalesEstimateService.kt:626)
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    at com.ether.sales.service.OpenSalesEstimateService.processEstimateResponse(...:181)
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    at com.ether.sales.controller.OpenSalesEstimateController.processEstimateResponse(...:71)
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    ...
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>Caused by: org.springframework.dao.IncorrectResultSizeDataAccessException:
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    Query { "org": ..., "emailAddress": "x@y.com" } returned non unique result.
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    at org.springframework.data.mongodb.core.MongoTemplate.findOne(...)
+</span></code></pre></div>
+<p><strong>Padhne ka tareeka:</strong></p>
+<ol>
+<li><strong>Sabse upar</strong> — kya exception hua aur kya message</li>
+<li><strong>Pehli line jo aapke code ki hai</strong> — <code>SalesEstimateService.kt:626</code> ← yahan dekho</li>
+<li><strong>"Caused by" sabse neeche</strong> — <strong>ye asli wajah hai</strong>. Log aksar ye miss kar dete hain.</li>
+<li>Framework ki lines (spring, jackson) skip karo — wo aam taur pe wajah nahi hoti</li>
+</ol>
+<blockquote>
+<p><strong>[REAL]</strong> Ye actual trace aapke Project Sales bug ka hai. "Caused by" line ne bataya ki
+<code>findByOrgAndEmailAddress</code> <code>Optional</code> expect karta hai par duplicate contacts hain —
+yaani <code>(org, emailAddress)</code> pe koi unique constraint nahi hai. <strong>Root cause ek line mein.</strong></p>
+</blockquote>
+<h2 id="32-log-levels">3.2 Log levels<a class="headerlink" href="#32-log-levels" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Kab</th>
+<th>QA kya dekhe</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ERROR</td>
+<td>Kuch fail hua, action chahiye</td>
+<td>Sabse pehle ye</td>
+</tr>
+<tr>
+<td>WARN</td>
+<td>Kuch galat hai par chal raha hai</td>
+<td>Aksar bug ka early sign</td>
+</tr>
+<tr>
+<td>INFO</td>
+<td>Normal flow milestones</td>
+<td>Trace follow karne ke liye</td>
+</tr>
+<tr>
+<td>DEBUG</td>
+<td>Detailed</td>
+<td>Debugging ke waqt on karo</td>
+</tr>
+<tr>
+<td>TRACE</td>
+<td>Bahut detailed</td>
+<td>Rarely</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Structured logging</strong> — modern apps JSON logs likhte hain:
+<div class="language-json highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">{</span><span class="nt">"timestamp"</span><span class="p">:</span><span class="s2">"2026-08-23T10:15:00Z"</span><span class="p">,</span><span class="nt">"level"</span><span class="p">:</span><span class="s2">"ERROR"</span><span class="p">,</span><span class="nt">"logger"</span><span class="p">:</span><span class="s2">"PaymentService"</span><span class="p">,</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w"> </span><span class="nt">"message"</span><span class="p">:</span><span class="s2">"Charge failed"</span><span class="p">,</span><span class="nt">"orderId"</span><span class="p">:</span><span class="s2">"PO-001"</span><span class="p">,</span><span class="nt">"correlationId"</span><span class="p">:</span><span class="s2">"abc-123"</span><span class="p">,</span><span class="nt">"userId"</span><span class="p">:</span><span class="s2">"u-45"</span><span class="p">}</span>
+</span></code></pre></div>
+Isse aap <strong>filter kar sakte ho</strong> — <code>correlationId=abc-123</code> daalke ek request ka poora journey.</p>
+<h2 id="33-correlation-id-ye-concept-zaroor-jaanein">3.3 Correlation ID — ye concept zaroor jaanein<a class="headerlink" href="#33-correlation-id-ye-concept-zaroor-jaanein" title="Permanent link">&para;</a></h2>
+<p>Ek request kai services se guzarti hai. Har service apne logs likhti hai. <strong>Kaise pata chale
+ki kaunsa log kis request ka hai?</strong></p>
+<p>Jawab: request ke saath ek unique ID chalti hai — <code>X-Correlation-ID</code> ya <code>X-Request-ID</code> header.
+Har service usko apne har log line mein likhti hai.</p>
+<p><strong>QA ke liye ye gold hai:</strong>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Test se ek ID bhejo</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">correlation_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"test-</span><span class="si">{</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span><span class="p">[:</span><span class="mi">8</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">api</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">"/api/v1/orders"</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">"X-Correlation-ID"</span><span class="p">:</span> <span class="n">correlation_id</span><span class="p">})</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="c1"># Fail hone pe log mein wahi ID search karo — poora backend journey mil jayega</span>
+</span></code></pre></div></p>
+<blockquote>
+<p><strong>Interview answer:</strong>
+"I send a correlation ID header from my tests, generated per test run. When something fails,
+I search the backend logs for that ID and get the complete server-side journey of that exact
+request across services — instead of guessing which of a thousand log lines was mine.
+It costs one header and it turns log searching from archaeology into a lookup."</p>
+</blockquote>
+<hr />
+<h1 id="4-web-fundamentals-request-lifecycle">4. Web fundamentals — request lifecycle<a class="headerlink" href="#4-web-fundamentals-request-lifecycle" title="Permanent link">&para;</a></h1>
+<p>Ye "senior-level thinking" wala section hai. Interviewer dekhta hai ki aap system samajhte ho
+ya sirf UI.</p>
+<h2 id="41-url-type-karne-se-page-dikhne-tak-poora-flow">4.1 URL type karne se page dikhne tak — poora flow<a class="headerlink" href="#41-url-type-karne-se-page-dikhne-tak-poora-flow" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>1. URL parse                  https://app.merlinai.co/orders
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>                                ↓
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>2. DNS LOOKUP                 app.merlinai.co → 52.14.x.x
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>   browser cache → OS cache → router → ISP resolver → root → TLD → authoritative
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>                                ↓
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>3. TCP HANDSHAKE              SYN → SYN-ACK → ACK  (3-way)
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>                                ↓
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>4. TLS HANDSHAKE (https)      cert verify, key exchange, cipher agree
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>                                ↓
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>5. HTTP REQUEST               GET /orders HTTP/1.1
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>                              Host, Cookie, Authorization, Accept...
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>                                ↓
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>6. [CDN?]                     static assets edge se aa sakte hain
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>                                ↓
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>7. [LOAD BALANCER]            kis server pe bhejein
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>                                ↓
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>8. SERVER                     app → business logic → DB query → response
+</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a>                                ↓
+</span><span id="__span-6-19"><a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a>9. HTTP RESPONSE              200, headers, HTML body
+</span><span id="__span-6-20"><a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a>                                ↓
+</span><span id="__span-6-21"><a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a>10. BROWSER RENDER            HTML parse → DOM
+</span><span id="__span-6-22"><a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a>                              CSS parse → CSSOM
+</span><span id="__span-6-23"><a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a>                              DOM + CSSOM → Render tree
+</span><span id="__span-6-24"><a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a>                              Layout (reflow) → Paint → Composite
+</span><span id="__span-6-25"><a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a>                                ↓
+</span><span id="__span-6-26"><a id="__codelineno-6-26" name="__codelineno-6-26" href="#__codelineno-6-26"></a>11. JS EXECUTE                bundles download, parse, execute
+</span><span id="__span-6-27"><a id="__codelineno-6-27" name="__codelineno-6-27" href="#__codelineno-6-27"></a>                              SPA: API calls → data → re-render
+</span><span id="__span-6-28"><a id="__codelineno-6-28" name="__codelineno-6-28" href="#__codelineno-6-28"></a>                                ↓
+</span><span id="__span-6-29"><a id="__codelineno-6-29" name="__codelineno-6-29" href="#__codelineno-6-29"></a>12. INTERACTIVE               user click kar sakta hai
+</span></code></pre></div>
+<p><strong>QA ke liye har step pe kya toot sakta hai:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Possible failure</th>
+<th>Kaise pakdein</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DNS</td>
+<td>Galat record, propagation delay</td>
+<td><code>nslookup</code>, <code>dig</code></td>
+</tr>
+<tr>
+<td>TLS</td>
+<td>Expired cert, wrong domain</td>
+<td>Browser warning, <code>openssl s_client</code></td>
+</tr>
+<tr>
+<td>CDN</td>
+<td>Stale cache</td>
+<td>Hard reload, cache headers dekho</td>
+</tr>
+<tr>
+<td>Load balancer</td>
+<td>Ek server unhealthy</td>
+<td>Baar-baar refresh — kabhi kaam kabhi nahi</td>
+</tr>
+<tr>
+<td>Server</td>
+<td>5xx, timeout</td>
+<td>Logs, status code</td>
+</tr>
+<tr>
+<td>Render</td>
+<td>Layout shift, blank screen</td>
+<td>Console errors, Lighthouse</td>
+</tr>
+<tr>
+<td>JS</td>
+<td>Bundle fail, race</td>
+<td>Network tab, console</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>[REAL]</strong> Aapke supplier portal tests mein <code>wait_until="commit"</code> use hota hai, comment ke
+saath: <em>"app's heavy JS bundles block domcontentloaded for 60s+"</em>. Ye step 11 ka direct
+impact hai — JS bundle itna bada hai ki normal load event bahut der se aata hai.</p>
+</blockquote>
+<h2 id="42-client-server-architecture">4.2 Client-server architecture<a class="headerlink" href="#42-client-server-architecture" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>CLIENT (browser)                    SERVER
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>  │                                   │
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>  │  ── HTTP request ──────────────→  │
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>  │                                   │  business logic
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>  │                                   │  DB query
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>  │  ←────────────── HTTP response ── │
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>  │                                   │
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>  stateless: har request independent
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>  server ko yaad nahi ki aap kaun ho
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>  → isliye cookie/token har request mein bhejna padta hai
+</span></code></pre></div>
+<p><strong>Monolith vs Microservices:</strong></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Monolith</th>
+<th>Microservices</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Deploy</td>
+<td>Ek unit</td>
+<td>Har service alag</td>
+</tr>
+<tr>
+<td>Failure</td>
+<td>Sab down</td>
+<td>Ek service down, baaki chal sakti hain</td>
+</tr>
+<tr>
+<td>Testing</td>
+<td>E2E aasan</td>
+<td>E2E mushkil — contract testing chahiye</td>
+</tr>
+<tr>
+<td>Debugging</td>
+<td>Ek log file</td>
+<td>Distributed tracing chahiye</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="5-http-cookies-sessions-cors">5. HTTP, cookies, sessions, CORS<a class="headerlink" href="#5-http-cookies-sessions-cors" title="Permanent link">&para;</a></h1>
+<h2 id="51-http-versions">5.1 HTTP versions<a class="headerlink" href="#51-http-versions" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Version</th>
+<th>Kya naya</th>
+<th>QA impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HTTP/1.1</td>
+<td>Persistent connections</td>
+<td>Head-of-line blocking, browser 6 connections/domain — isliye "domain sharding" hack</td>
+</tr>
+<tr>
+<td>HTTP/2</td>
+<td>Multiplexing, header compression, server push</td>
+<td>Ek connection pe kai requests — sharding ab anti-pattern</td>
+</tr>
+<tr>
+<td>HTTP/3</td>
+<td>QUIC over UDP</td>
+<td>Packet loss pe behtar — mobile networks</td>
+</tr>
+</tbody>
+</table>
+<h2 id="52-cookies-poora">5.2 Cookies — poora<a class="headerlink" href="#52-cookies-poora" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>Set-Cookie: session=abc123; Domain=.merlinai.co; Path=/; Expires=...;
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>            HttpOnly; Secure; SameSite=Lax
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Matlab</th>
+<th>Security impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Domain</code></td>
+<td>Kaunse domain pe bheji jaye</td>
+<td>Bahut broad = leak risk</td>
+</tr>
+<tr>
+<td><code>Path</code></td>
+<td>Kaunse path pe</td>
+<td></td>
+</tr>
+<tr>
+<td><code>Expires</code> / <code>Max-Age</code></td>
+<td>Kab tak</td>
+<td>Missing = session cookie, tab band = gayab</td>
+</tr>
+<tr>
+<td><strong><code>HttpOnly</code></strong></td>
+<td>JS access nahi kar sakta</td>
+<td><strong>XSS se token chori nahi hoga</strong></td>
+</tr>
+<tr>
+<td><strong><code>Secure</code></strong></td>
+<td>Sirf HTTPS pe</td>
+<td>HTTP pe plaintext nahi jayegi</td>
+</tr>
+<tr>
+<td><strong><code>SameSite</code></strong></td>
+<td>Cross-site request pe bheji jaye?</td>
+<td><strong>CSRF protection</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>SameSite values:</strong>
+- <code>Strict</code> — cross-site pe kabhi nahi. Sabse safe, par external link se aane pe logout dikhta hai.
+- <code>Lax</code> — top-level GET navigation pe jaayegi. Default aajkal.
+- <code>None</code> — hamesha jayegi, par <code>Secure</code> mandatory.</p>
+<p><strong>QA test cases:</strong>
+- Logout ke baad cookie invalidate hui? (sirf browser se delete karna kaafi nahi — server side bhi)
+- <code>HttpOnly</code> set hai auth cookie pe?
+- <code>Secure</code> set hai?
+- Expiry sensible hai?</p>
+<h2 id="53-session-vs-token-auth">5.3 Session vs Token auth<a class="headerlink" href="#53-session-vs-token-auth" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>SESSION (stateful)                    TOKEN / JWT (stateless)
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>─────────────────                     ──────────────────────
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>login → server session banata hai     login → server signed token deta hai
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>session ID cookie mein                token client store karta hai
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>server memory/redis mein state        server kuch store nahi karta
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>logout = server se delete             logout = ??? token valid rehta hai
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>                                      → isliye short expiry + refresh token
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>                                      → ya blocklist rakhni padti hai
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>scale = shared session store          scale = koi shared state nahi
+</span></code></pre></div>
+<p><strong>JWT anatomy:</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>eyJhbGciOiJIUzI1NiJ9  .  eyJzdWIiOiJyaXRpayJ9  .  SflKxwRJSMeKKF2QT4f
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>      HEADER                    PAYLOAD                  SIGNATURE
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>   {"alg":"HS256"}       {"sub":"ritik","exp":...}   HMAC(header.payload, secret)
+</span></code></pre></div></p>
+<p><strong>Ye samajhna zaroori hai:</strong> payload <strong>base64 hai, encrypted nahi</strong>. Koi bhi padh sakta hai.
+Isliye usme kabhi password ya sensitive data mat daalo. Signature guarantee karta hai ki
+<strong>tamper nahi hua</strong> — par confidentiality nahi deta.</p>
+<p><strong>QA test cases (aapke project se relevant):</strong>
+- Payload badalke bhejo (e.g. <code>role: admin</code>) → signature fail hona chahiye → 401
+- Expired token → 401
+- Doosre user ka valid token → 403/404
+- <code>alg: none</code> attack → reject hona chahiye
+- Token replay (single-use hona chahiye tha?) → reject</p>
+<blockquote>
+<p><strong>[REAL]</strong> <code>ProjectSaleConfirmIntegrationTest</code> mein exactly ye saare cases hain — forged
+signature, wrong sale binding, email mismatch, single-use replay, expiry, cross-org.
+Ye interview mein batana strong hai: <em>"our acceptance-token tests cover forged signature,
+replay, expiry, cross-binding and cross-org, because that endpoint is publicly reachable."</em></p>
+</blockquote>
+<h2 id="54-cors-ye-zaroor-samjho">5.4 CORS — ye zaroor samjho<a class="headerlink" href="#54-cors-ye-zaroor-samjho" title="Permanent link">&para;</a></h2>
+<p><strong>Problem:</strong> browser security policy kehti hai ki <code>app.merlinai.co</code> ka JavaScript
+<code>api.merlinai.co</code> ko call nahi kar sakta — <strong>different origin</strong>.</p>
+<p><strong>Origin = scheme + host + port.</strong> Teenon match karne chahiye.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>https://app.merlinai.co        →  https://api.merlinai.co     ✗ different host
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>https://app.merlinai.co        →  http://app.merlinai.co      ✗ different scheme
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>https://app.merlinai.co:443    →  https://app.merlinai.co:8080 ✗ different port
+</span></code></pre></div>
+<p><strong>Solution:</strong> server batata hai ki kaunse origins allowed hain.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>Access-Control-Allow-Origin: https://app.merlinai.co
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>Access-Control-Allow-Methods: GET, POST, PUT, DELETE
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>Access-Control-Allow-Headers: Authorization, Content-Type
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>Access-Control-Allow-Credentials: true
+</span></code></pre></div>
+<p><strong>Preflight</strong> — "simple" requests ke alawa browser pehle ek <code>OPTIONS</code> request bhejta hai
+poochhne ke liye. Ye tab hota hai jab:
+- Method <code>PUT</code>/<code>DELETE</code>/<code>PATCH</code> ho
+- Custom headers hoN (jaise <code>Authorization</code>)
+- Content-Type <code>application/json</code> ho</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>Browser                              Server
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>   │  OPTIONS /api/v1/orders  ──────→ │   (preflight)
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>   │  Origin: https://app...          │
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>   │  Access-Control-Request-Method: POST
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>   │                                  │
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>   │  ←──── 204 + Allow-* headers ─── │
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>   │                                  │
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>   │  POST /api/v1/orders  ─────────→ │   (actual)
+</span></code></pre></div>
+<p><strong>QA ke liye:</strong>
+- CORS error hamesha <strong>browser</strong> mein aata hai, Postman/curl mein nahi — kyunki ye browser
+  ki policy hai, server ki nahi. <strong>Ye interview mein poochha jaata hai.</strong>
+- <code>Allow-Origin: *</code> + <code>Allow-Credentials: true</code> — ye combination browser reject karta hai,
+  aur ye ek security smell hai
+- Naya header add karne pe preflight allow-list update karni padti hai — common bug</p>
+<blockquote>
+<p><strong>Interview answer:</strong>
+"CORS is a browser-enforced policy, not a server one — which is why a request that fails in
+the browser will succeed from Postman or curl. That distinction matters when triaging,
+because 'it works in Postman' doesn't mean the endpoint is fine. What I test is the preflight
+response: whether the methods and headers the frontend actually uses are in the allow-list,
+because adding one new header on the client side silently breaks the call until the server
+allow-list is updated. And I check that a wildcard origin isn't combined with credentials —
+browsers reject that combination and it usually indicates a misconfiguration."</p>
+</blockquote>
+<hr />
+<h1 id="6-infrastructure-dns-load-balancer-cdn-cache">6. Infrastructure — DNS, load balancer, CDN, cache<a class="headerlink" href="#6-infrastructure-dns-load-balancer-cdn-cache" title="Permanent link">&para;</a></h1>
+<h2 id="61-dns">6.1 DNS<a class="headerlink" href="#61-dns" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>app.merlinai.co → ?
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>  1. Browser cache
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>  2. OS cache        (hosts file yahan override kar sakte ho — testing ke liye useful)
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>  3. Router cache
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>  4. ISP resolver
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>  5. Root → TDL (.co) → authoritative nameserver
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>  → 52.14.x.x
+</span></code></pre></div>
+<p><strong>QA relevance:</strong> DNS propagation mein waqt lagta hai (TTL). Naya environment banne ke baad
+kuch der tak purana IP resolve ho sakta hai. <code>nslookup</code> / <code>dig</code> se verify karo.</p>
+<p><strong>Testing trick:</strong> <code>/etc/hosts</code> mein entry daalke traffic kisi aur IP pe bhej sakte ho —
+staging backend ke saath prod frontend test karna ho to kaam aata hai.</p>
+<h2 id="62-load-balancer">6.2 Load balancer<a class="headerlink" href="#62-load-balancer" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>                    ┌─ Server 1
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>Client → LB ────────┼─ Server 2
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>                    └─ Server 3
+</span></code></pre></div>
+<p><strong>Algorithms:</strong> round-robin, least-connections, IP-hash (sticky).</p>
+<p><strong>QA ke liye kya matter karta hai:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Issue</th>
+<th>Symptom</th>
+<th>Test</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Session affinity</strong></td>
+<td>Kabhi logged in, kabhi logout</td>
+<td>Baar-baar refresh karo</td>
+</tr>
+<tr>
+<td>Ek server unhealthy</td>
+<td>Intermittent 500</td>
+<td>Health check verify karo</td>
+</tr>
+<tr>
+<td>Mixed versions during deploy</td>
+<td>Kabhi naya feature dikhta, kabhi nahi</td>
+<td>Rolling deploy ke dauraan test</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Ye "kabhi kaam karta hai kabhi nahi" wale bugs ka <strong>classic</strong> source hai — aur log ise
+"flaky test" samajh lete hain.</p>
+</blockquote>
+<h2 id="63-cdn-aur-caching">6.3 CDN aur caching<a class="headerlink" href="#63-cdn-aur-caching" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>User (Bangalore) → CDN edge (Mumbai)  → cache HIT  → turant
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>                                      → cache MISS → origin server → cache karke bhejo
+</span></code></pre></div>
+<p><strong>Cache headers:</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>Cache-Control: max-age=3600, public        # 1 ghanta cache karo
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>Cache-Control: no-store                    # kabhi cache mat karo (sensitive data)
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>Cache-Control: must-revalidate
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>ETag: "abc123"                             # content ka fingerprint
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>If-None-Match: "abc123"  →  304 Not Modified  (body nahi bhejta — bandwidth bachta hai)
+</span></code></pre></div></p>
+<p><strong>QA test cases:</strong>
+- Deploy ke baad purana JS bundle serve ho raha hai? (cache busting hash lagta hai?)
+- <strong>Sensitive data cache ho raha hai?</strong> — <code>Cache-Control: no-store</code> hona chahiye. Ye ek
+  real security bug hota hai: user logout kare, back button dabaye, aur pichhla data dikh jaye.
+- 304 sahi kaam kar raha hai?</p>
+<h2 id="64-reverse-proxy">6.4 Reverse proxy<a class="headerlink" href="#64-reverse-proxy" title="Permanent link">&para;</a></h2>
+<p><div class="language-text highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>Internet → Reverse Proxy (nginx) → internal services
+</span></code></pre></div>
+Kaam: SSL termination, routing, rate limiting, compression, caching, request/response headers.</p>
+<p><strong>QA relevance:</strong> kabhi-kabhi error proxy se aata hai, app se nahi. <code>502 Bad Gateway</code> matlab
+proxy backend tak nahi pahuncha. <code>504 Gateway Timeout</code> matlab backend ne der lagayi.
+Ye distinction debugging mein bachata hai.</p>
+<h2 id="65-websockets">6.5 WebSockets<a class="headerlink" href="#65-websockets" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>HTTP:       request → response, connection band
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>WebSocket:  handshake (HTTP Upgrade) → connection khuli rehti hai → dono taraf messages
+</span></code></pre></div>
+<p><strong>Kab:</strong> real-time updates, chat, live dashboards, notifications.</p>
+<p><strong>QA test cases:</strong>
+- Connection drop hone pe reconnect hota hai?
+- Reconnect ke baad missed messages aate hain?
+- Multiple tabs — har tab apna connection?
+- Message order guaranteed hai?
+- Auth — connection pe token verify hota hai?</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="c1"># Playwright se websocket monitor karo</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">test_websocket_messages</span><span class="p">(</span><span class="n">page</span><span class="p">):</span>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>    <span class="n">messages</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>    <span class="n">page</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="s2">"websocket"</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">ws</span><span class="p">:</span> <span class="n">ws</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="s2">"framereceived"</span><span class="p">,</span>
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>            <span class="k">lambda</span> <span class="n">payload</span><span class="p">:</span> <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">payload</span><span class="p">)))</span>
+</span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a>    <span class="n">page</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="s2">"/dashboard"</span><span class="p">)</span>
+</span><span id="__span-20-7"><a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a>    <span class="n">page</span><span class="o">.</span><span class="n">wait_for_timeout</span><span class="p">(</span><span class="mi">5000</span><span class="p">)</span>
+</span><span id="__span-20-8"><a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a>    <span class="k">assert</span> <span class="nb">any</span><span class="p">(</span><span class="s2">"order_updated"</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">)</span>
+</span></code></pre></div>
+<hr />
+<h1 id="7-security-testing">7. Security testing<a class="headerlink" href="#7-security-testing" title="Permanent link">&para;</a></h1>
+<p>Deep security engineer banna zaroori nahi — par <strong>basic vulnerabilities pehchanna</strong> aana
+chahiye. Ye ab senior QA se expect kiya jaata hai.</p>
+<h2 id="71-authentication-vs-authorization">7.1 Authentication vs Authorization<a class="headerlink" href="#71-authentication-vs-authorization" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Authentication</th>
+<th>Authorization</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sawaal</td>
+<td><strong>Tum kaun ho?</strong></td>
+<td><strong>Tumhe kya karne ki ijaazat hai?</strong></td>
+</tr>
+<tr>
+<td>Fail hone pe</td>
+<td>401</td>
+<td>403</td>
+</tr>
+<tr>
+<td>Example</td>
+<td>Login</td>
+<td>Viewer approve nahi kar sakta</td>
+</tr>
+</tbody>
+</table>
+<p><strong>RBAC (Role-Based Access Control):</strong> user → role → permissions.</p>
+<p><strong>QA ka test matrix:</strong> har role × har action = ek cell. Har cell test karo.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span><span class="s2">"role,action,expected"</span><span class="p">,</span> <span class="p">[</span>
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>    <span class="p">(</span><span class="s2">"admin"</span><span class="p">,</span>   <span class="s2">"approve"</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span>
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>    <span class="p">(</span><span class="s2">"manager"</span><span class="p">,</span> <span class="s2">"approve"</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span>
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>    <span class="p">(</span><span class="s2">"viewer"</span><span class="p">,</span>  <span class="s2">"approve"</span><span class="p">,</span> <span class="mi">403</span><span class="p">),</span>      <span class="c1"># ← ye sabse important</span>
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>    <span class="p">(</span><span class="s2">"viewer"</span><span class="p">,</span>  <span class="s2">"read"</span><span class="p">,</span>    <span class="mi">200</span><span class="p">),</span>
+</span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="p">])</span>
+</span><span id="__span-21-7"><a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a><span class="k">def</span><span class="w"> </span><span class="nf">test_rbac</span><span class="p">(</span><span class="n">api_for_role</span><span class="p">,</span> <span class="n">role</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">expected</span><span class="p">):</span>
+</span><span id="__span-21-8"><a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a>    <span class="n">r</span> <span class="o">=</span> <span class="n">api_for_role</span><span class="p">(</span><span class="n">role</span><span class="p">)</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="sa">f</span><span class="s2">"/api/v1/orders/123/</span><span class="si">{</span><span class="n">action</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-21-9"><a id="__codelineno-21-9" name="__codelineno-21-9" href="#__codelineno-21-9"></a>    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">expected</span>
+</span></code></pre></div>
+<p><strong>Critical point:</strong> UI mein button chhupa dena <strong>security nahi hai</strong>. API level pe test karo.</p>
+<h2 id="72-owasp-top-10-qa-lens-se">7.2 OWASP Top 10 — QA lens se<a class="headerlink" href="#72-owasp-top-10-qa-lens-se" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Vulnerability</th>
+<th>QA kaise test kare</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Broken Access Control</strong></td>
+<td>IDOR — doosre user ka ID daalke try karo. Cross-org. Role bypass.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Cryptographic Failures</td>
+<td>HTTPS everywhere? Password hashed? Sensitive data cache/logs mein?</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Injection</strong></td>
+<td>SQL/NoSQL/command injection payloads</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Insecure Design</td>
+<td>Rate limiting hai? Business logic bypass ho sakta hai?</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Security Misconfiguration</td>
+<td>Default creds, debug mode on, verbose errors, directory listing</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Vulnerable Components</td>
+<td><code>pip-audit</code>, <code>npm audit</code>, Dependabot</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Auth Failures</td>
+<td>Weak password allowed? Brute force protection? Session fixation?</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Data Integrity Failures</td>
+<td>Unsigned updates, insecure deserialization</td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong>Logging Failures</strong></td>
+<td>Security events log hote hain? PII log mein to nahi?</td>
+</tr>
+<tr>
+<td>10</td>
+<td>SSRF</td>
+<td>Server ko internal URL fetch karwana</td>
+</tr>
+</tbody>
+</table>
+<h2 id="73-idor-sabse-common-aur-sabse-easy-to-test">7.3 IDOR — sabse common aur sabse easy to test<a class="headerlink" href="#73-idor-sabse-common-aur-sabse-easy-to-test" title="Permanent link">&para;</a></h2>
+<p><strong>Insecure Direct Object Reference</strong> — aap apna ID badalke doosre ka data dekh sakte ho.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">test_cannot_access_other_users_order</span><span class="p">(</span><span class="n">user_a_api</span><span class="p">,</span> <span class="n">user_b_order_id</span><span class="p">):</span>
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>    <span class="n">r</span> <span class="o">=</span> <span class="n">user_a_api</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">"/api/v1/orders/</span><span class="si">{</span><span class="n">user_b_order_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">403</span><span class="p">,</span> <span class="mi">404</span><span class="p">)</span>
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>    <span class="c1"># 404 aksar behtar hai — 403 bata deta hai ki resource EXIST karta hai</span>
+</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>
+</span><span id="__span-22-6"><a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a>
+</span><span id="__span-22-7"><a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a><span class="k">def</span><span class="w"> </span><span class="nf">test_cannot_access_other_org</span><span class="p">(</span><span class="n">org_a_api</span><span class="p">,</span> <span class="n">org_b_order_id</span><span class="p">):</span>
+</span><span id="__span-22-8"><a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a><span class="w">    </span><span class="sd">"""Multi-tenant apps mein ye sabse critical test hai."""</span>
+</span><span id="__span-22-9"><a id="__codelineno-22-9" name="__codelineno-22-9" href="#__codelineno-22-9"></a>    <span class="n">r</span> <span class="o">=</span> <span class="n">org_a_api</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">"/api/v1/orders/</span><span class="si">{</span><span class="n">org_b_order_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-22-10"><a id="__codelineno-22-10" name="__codelineno-22-10" href="#__codelineno-22-10"></a>    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">403</span><span class="p">,</span> <span class="mi">404</span><span class="p">)</span>
+</span></code></pre></div>
+<blockquote>
+<p><strong>[REAL]</strong> Merlin ka backend multi-tenant hai — har query <code>orgId</code> se scoped honi chahiye.
+Unke apne rules mein likha hai: <em>"findAll() is a security violation in almost every context"</em>.
+Aur <code>ProjectSaleLifecycleIntegrationTest</code> mein ek test hai:
+<em>"a second org cannot read, close, or cancel this org's project sale"</em>. <strong>Ye IDOR test hai.</strong></p>
+</blockquote>
+<h2 id="74-injection">7.4 Injection<a class="headerlink" href="#74-injection" title="Permanent link">&para;</a></h2>
+<p><strong>SQL Injection:</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>' OR '1'='1
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>'; DROP TABLE users; --
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>1 UNION SELECT username, password FROM users --
+</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>admin'--
+</span></code></pre></div></p>
+<p><strong>NoSQL Injection (MongoDB — aapke project pe relevant):</strong>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="p">{</span><span class="nt">"email"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"$ne"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">},</span><span class="w"> </span><span class="nt">"password"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"$ne"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">}}</span><span class="w">    </span><span class="c1">// login bypass</span>
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="p">{</span><span class="nt">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"admin@x.com"</span><span class="p">,</span><span class="w"> </span><span class="nt">"password"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"$gt"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">}}</span>
+</span></code></pre></div></p>
+<p><strong>Test karna:</strong> in payloads ko har input field aur har API parameter mein daalo.
+<strong>Expected:</strong> clean validation error, <strong>na ki</strong> DB error ya successful bypass.</p>
+<p><strong>Red flag:</strong> agar response mein SQL syntax error ya Mongo query dikh jaye — <strong>ye do bugs
+hain</strong>: injection ki sambhavna, aur information disclosure.</p>
+<blockquote>
+<p><strong>[REAL]</strong> Aapne ye exactly pakda tha — Project Sales ka accept endpoint 400 ke saath
+<strong>raw Mongo query, org ObjectId samet</strong> return kar raha tha, ek <strong>public unauthenticated</strong>
+endpoint pe. Interview mein ye batana bahut strong hai.</p>
+</blockquote>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">test_error_does_not_leak_internals</span><span class="p">():</span>
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">API</span><span class="si">}</span><span class="s2">/api/v1/open/accept"</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s2">"bad"</span><span class="p">:</span> <span class="s2">"data"</span><span class="p">})</span>
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>    <span class="n">body</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a>    <span class="k">for</span> <span class="n">leak</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"stack trace"</span><span class="p">,</span> <span class="s2">"sql"</span><span class="p">,</span> <span class="s2">"mongo"</span><span class="p">,</span> <span class="s2">"org.$id"</span><span class="p">,</span> <span class="s2">"$java"</span><span class="p">,</span>
+</span><span id="__span-25-5"><a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a>                 <span class="s2">"at com."</span><span class="p">,</span> <span class="s2">"exception"</span><span class="p">,</span> <span class="s2">"/users/"</span><span class="p">,</span> <span class="s2">"c:</span><span class="se">\\</span><span class="s2">"</span><span class="p">]:</span>
+</span><span id="__span-25-6"><a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a>        <span class="k">assert</span> <span class="n">leak</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">body</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"Error response leaked: </span><span class="si">{</span><span class="n">leak</span><span class="si">}</span><span class="s2">"</span>
+</span></code></pre></div>
+<h2 id="75-xss-aur-csrf">7.5 XSS aur CSRF<a class="headerlink" href="#75-xss-aur-csrf" title="Permanent link">&para;</a></h2>
+<p><strong>XSS (Cross-Site Scripting)</strong> — attacker ka JS aapke page pe chalta hai.</p>
+<div class="language-html highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span><span class="nx">alert</span><span class="p">(</span><span class="mf">1</span><span class="p">)&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">x</span> <span class="na">onerror</span><span class="o">=</span><span class="s">alert(document.cookie)</span><span class="p">&gt;</span>
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>"&gt;<span class="p">&lt;</span><span class="nt">svg</span> <span class="na">onload</span><span class="o">=</span><span class="s">alert(1)</span><span class="p">&gt;</span>
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a>javascript:alert(1)
+</span></code></pre></div>
+<p><strong>Types:</strong> stored (DB mein save, har user ko), reflected (URL se), DOM-based (client-side).</p>
+<p><strong>Test:</strong> ye payloads har input mein daalo, phir jahan wo render hota hai wahan dekho.
+<strong>Expected:</strong> escaped text dikhe, execute na ho.</p>
+<p><strong>Defense:</strong> output encoding, Content-Security-Policy header, <code>HttpOnly</code> cookies.</p>
+<p><strong>CSRF (Cross-Site Request Forgery)</strong> — attacker ki site se aapke logged-in session pe request.</p>
+<p><strong>Defense:</strong> CSRF token, <code>SameSite</code> cookie.
+<strong>Test:</strong> CSRF token hata ke ya galat token se request bhejo → reject hona chahiye.</p>
+<h2 id="76-sensitive-data-exposure-checklist">7.6 Sensitive data exposure — checklist<a class="headerlink" href="#76-sensitive-data-exposure-checklist" title="Permanent link">&para;</a></h2>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Passwords hashed (bcrypt/argon2), plaintext nahi</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> API responses mein <code>passwordHash</code>, internal IDs, debug fields nahi</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Logs mein PII, tokens, card numbers nahi</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Error messages mein stack trace nahi (production mein)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <code>.git</code>, <code>.env</code>, backup files web se accessible nahi</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Source maps production mein nahi</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Credentials repo mein commit nahi</li>
+</ul>
+<blockquote>
+<p><strong>[REAL]</strong> Aakhri point — aapke repo mein <code>application-test.properties</code> mein MongoDB Atlas
+credentials aur QuickBooks client secret <strong>plaintext committed</strong> hain. Ye batana interview
+mein strong hai: <em>"I found credentials committed in our test properties file and raised it —
+the remediation is moving them to the CI secret store and rotating them."</em></p>
+<p><strong>Interview answer (security overall):</strong>
+"I'm not a security engineer, but I treat a defined set of security checks as part of normal
+functional testing — mainly access control, because that's where QA can find real issues
+without specialist tooling. For every endpoint I ask three questions: does it work without a
+token, does it work with another user's token, and does it work with another tenant's token.
+In a multi-tenant product that third one is the highest-value test there is. I also check
+that error responses don't leak internals — I've found a public endpoint returning a raw
+database query including the org identifier, which is an information-disclosure issue on top
+of the functional bug."</p>
+</blockquote>
+<hr />
+<h1 id="8-performance-testing">8. Performance testing<a class="headerlink" href="#8-performance-testing" title="Permanent link">&para;</a></h1>
+<h2 id="81-types-ye-table-yaad-rakho">8.1 Types — ye table yaad rakho<a class="headerlink" href="#81-types-ye-table-yaad-rakho" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Kya karte hain</th>
+<th>Kya pata chalta hai</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Load</strong></td>
+<td>Expected traffic daalo</td>
+<td>Normal load pe performance theek hai?</td>
+</tr>
+<tr>
+<td><strong>Stress</strong></td>
+<td>Badhate raho jab tak toot na jaye</td>
+<td>Breaking point kahan hai</td>
+</tr>
+<tr>
+<td><strong>Spike</strong></td>
+<td>Achanak bahut saara traffic</td>
+<td>Sudden surge handle karta hai?</td>
+</tr>
+<tr>
+<td><strong>Endurance / Soak</strong></td>
+<td>Normal load, 8-12 ghante</td>
+<td><strong>Memory leak</strong>, connection leak</td>
+</tr>
+<tr>
+<td><strong>Volume</strong></td>
+<td>Bahut saara DATA</td>
+<td>Bade dataset pe queries slow to nahi</td>
+</tr>
+<tr>
+<td><strong>Scalability</strong></td>
+<td>Resources badhao</td>
+<td>Linearly scale karta hai?</td>
+</tr>
+</tbody>
+</table>
+<h2 id="82-metrics-aur-ek-zaroori-nuance">8.2 Metrics — aur ek zaroori nuance<a class="headerlink" href="#82-metrics-aur-ek-zaroori-nuance" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Matlab</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Response time</strong></td>
+<td>Ek request ka poora time</td>
+</tr>
+<tr>
+<td><strong>Latency</strong></td>
+<td>Network travel time (response time ka hissa)</td>
+</tr>
+<tr>
+<td><strong>Throughput</strong></td>
+<td>Requests per second</td>
+</tr>
+<tr>
+<td><strong>Concurrent users</strong></td>
+<td>Ek saath kitne active</td>
+</tr>
+<tr>
+<td><strong>Error rate</strong></td>
+<td>% requests jo fail huin</td>
+</tr>
+<tr>
+<td><strong>p50 / p95 / p99</strong></td>
+<td>Percentiles — <strong>average se zyada important</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Average dhoka deta hai:</strong>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>100 requests:
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>  95 requests → 50ms
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>   5 requests → 3000ms
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a>
+</span><span id="__span-27-5"><a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a>Average = (95×50 + 5×3000) / 100 = 197ms     ← "theek lag raha hai"
+</span><span id="__span-27-6"><a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a>p95     = 3000ms                              ← 5% users ka experience KHARAB
+</span></code></pre></div></p>
+<blockquote>
+<p><strong>Interview answer:</strong>
+"I report p95 and p99, not the average, because the average hides the tail. If ninety-five
+percent of requests are fast and five percent take three seconds, the average looks
+acceptable while one in twenty users has a bad experience — and at scale that's thousands
+of people. p99 is what I'd hold a team to for a critical path."</p>
+</blockquote>
+<h2 id="83-jmeter-components">8.3 JMeter — components<a class="headerlink" href="#83-jmeter-components" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Kaam</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Thread Group</strong></td>
+<td>Kitne users, ramp-up time, loop count</td>
+</tr>
+<tr>
+<td><strong>Samplers</strong></td>
+<td>Actual requests (HTTP Request)</td>
+</tr>
+<tr>
+<td><strong>Listeners</strong></td>
+<td>Results — <em>View Results Tree sirf debug ke liye, load mein OFF</em></td>
+</tr>
+<tr>
+<td><strong>Assertions</strong></td>
+<td>Response validate karo — warna 500 bhi "pass" ho jayega</td>
+</tr>
+<tr>
+<td><strong>Config Elements</strong></td>
+<td>CSV Data Set (test data), HTTP Header Manager (auth)</td>
+</tr>
+<tr>
+<td><strong>Timers</strong></td>
+<td>Think time — real user simulate karo</td>
+</tr>
+<tr>
+<td><strong>Pre/Post Processors</strong></td>
+<td>Token extract karke agli request mein use karo</td>
+</tr>
+</tbody>
+</table>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="c1"># GUI mein test plan banao, chalao HAMESHA non-GUI mode mein</span>
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>jmeter<span class="w"> </span>-n<span class="w"> </span>-t<span class="w"> </span>plan.jmx<span class="w"> </span>-l<span class="w"> </span>results.jtl<span class="w"> </span>-e<span class="w"> </span>-o<span class="w"> </span>report/
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>
+</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a><span class="c1"># -n non-GUI   -t plan   -l results   -e generate report   -o output dir</span>
+</span></code></pre></div>
+<p><strong>Common galti:</strong> GUI mode mein load test chalana. GUI khud resource khaata hai aur results
+distort karta hai.</p>
+<h2 id="84-k6-modern-alternative-js-mein">8.4 k6 — modern alternative (JS mein)<a class="headerlink" href="#84-k6-modern-alternative-js-mein" title="Permanent link">&para;</a></h2>
+<div class="language-javascript highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="k">import</span><span class="w"> </span><span class="nx">http</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'k6/http'</span><span class="p">;</span>
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">check</span><span class="p">,</span><span class="w"> </span><span class="nx">sleep</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'k6'</span><span class="p">;</span>
+</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>
+</span><span id="__span-29-4"><a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a><span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">options</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-29-5"><a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a><span class="w">  </span><span class="nx">stages</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-29-6"><a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nx">duration</span><span class="o">:</span><span class="w"> </span><span class="s1">'2m'</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="mf">100</span><span class="w"> </span><span class="p">},</span><span class="w">   </span><span class="c1">// ramp up</span>
+</span><span id="__span-29-7"><a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nx">duration</span><span class="o">:</span><span class="w"> </span><span class="s1">'5m'</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="mf">100</span><span class="w"> </span><span class="p">},</span><span class="w">   </span><span class="c1">// stay</span>
+</span><span id="__span-29-8"><a id="__codelineno-29-8" name="__codelineno-29-8" href="#__codelineno-29-8"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nx">duration</span><span class="o">:</span><span class="w"> </span><span class="s1">'2m'</span><span class="p">,</span><span class="w"> </span><span class="nx">target</span><span class="o">:</span><span class="w"> </span><span class="mf">0</span><span class="w"> </span><span class="p">},</span><span class="w">     </span><span class="c1">// ramp down</span>
+</span><span id="__span-29-9"><a id="__codelineno-29-9" name="__codelineno-29-9" href="#__codelineno-29-9"></a><span class="w">  </span><span class="p">],</span>
+</span><span id="__span-29-10"><a id="__codelineno-29-10" name="__codelineno-29-10" href="#__codelineno-29-10"></a><span class="w">  </span><span class="nx">thresholds</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-29-11"><a id="__codelineno-29-11" name="__codelineno-29-11" href="#__codelineno-29-11"></a><span class="w">    </span><span class="nx">http_req_duration</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">'p(95)&lt;500'</span><span class="p">],</span><span class="w">   </span><span class="c1">// 95% under 500ms</span>
+</span><span id="__span-29-12"><a id="__codelineno-29-12" name="__codelineno-29-12" href="#__codelineno-29-12"></a><span class="w">    </span><span class="nx">http_req_failed</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s1">'rate&lt;0.01'</span><span class="p">],</span><span class="w">     </span><span class="c1">// &lt;1% errors</span>
+</span><span id="__span-29-13"><a id="__codelineno-29-13" name="__codelineno-29-13" href="#__codelineno-29-13"></a><span class="w">  </span><span class="p">},</span>
+</span><span id="__span-29-14"><a id="__codelineno-29-14" name="__codelineno-29-14" href="#__codelineno-29-14"></a><span class="p">};</span>
+</span><span id="__span-29-15"><a id="__codelineno-29-15" name="__codelineno-29-15" href="#__codelineno-29-15"></a>
+</span><span id="__span-29-16"><a id="__codelineno-29-16" name="__codelineno-29-16" href="#__codelineno-29-16"></a><span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-29-17"><a id="__codelineno-29-17" name="__codelineno-29-17" href="#__codelineno-29-17"></a><span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'https://api.merlinai.co/api/v1/orders'</span><span class="p">);</span>
+</span><span id="__span-29-18"><a id="__codelineno-29-18" name="__codelineno-29-18" href="#__codelineno-29-18"></a><span class="w">  </span><span class="nx">check</span><span class="p">(</span><span class="nx">res</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s1">'status 200'</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">r</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">status</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">200</span><span class="w"> </span><span class="p">});</span>
+</span><span id="__span-29-19"><a id="__codelineno-29-19" name="__codelineno-29-19" href="#__codelineno-29-19"></a><span class="w">  </span><span class="nx">sleep</span><span class="p">(</span><span class="mf">1</span><span class="p">);</span>
+</span><span id="__span-29-20"><a id="__codelineno-29-20" name="__codelineno-29-20" href="#__codelineno-29-20"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>k6 ka fayda:</strong> code hai, git mein rehta hai, CI mein aasan, thresholds built-in
+(pass/fail automatic).</p>
+<h2 id="85-bottleneck-kaise-dhoondhein">8.5 Bottleneck kaise dhoondhein<a class="headerlink" href="#85-bottleneck-kaise-dhoondhein" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>Slow response
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>  ↓
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>Kahan slow hai?
+</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a>  ├─ Network        → CDN, payload size, compression
+</span><span id="__span-30-5"><a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a>  ├─ Web server     → connection pool, worker count
+</span><span id="__span-30-6"><a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a>  ├─ Application    → inefficient code, N+1 queries, sync blocking calls
+</span><span id="__span-30-7"><a id="__codelineno-30-7" name="__codelineno-30-7" href="#__codelineno-30-7"></a>  ├─ Database       → missing index, slow query, lock contention
+</span><span id="__span-30-8"><a id="__codelineno-30-8" name="__codelineno-30-8" href="#__codelineno-30-8"></a>  └─ External API   → third-party slow, no timeout
+</span></code></pre></div>
+<p><strong>QA ka sabse common find: N+1 queries.</strong> Ek page 200 DB queries kar raha hai jab 2 kaafi
+thi. Ye tab dikhta hai jab data badhta hai — 10 records pe theek, 1000 pe timeout.</p>
+<blockquote>
+<p><strong>[REAL]</strong> Merlin ke backend rules mein <code>no-n-plus-one.md</code> ka poora file hai, aur ek real
+incident documented hai: <em>"116 seconds for 500 docs"</em> lazy DBRef proxies ki wajah se.
+Interview mein ye batana: <em>"one of the performance rules in our codebase came from an
+incident where lazy database references inside a loop turned one query into hundreds —
+116 seconds for 500 documents."</em></p>
+</blockquote>
+<hr />
+<h1 id="9-observability">9. Observability<a class="headerlink" href="#9-observability" title="Permanent link">&para;</a></h1>
+<h2 id="91-teen-pillars">9.1 Teen pillars<a class="headerlink" href="#91-teen-pillars" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>LOGS                    METRICS                 TRACES
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>────                    ───────                 ──────
+</span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>"kya hua"               "kitna/kitni baar"      "request ka poora journey"
+</span><span id="__span-31-4"><a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a>discrete events         aggregated numbers      distributed spans
+</span><span id="__span-31-5"><a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a>
+</span><span id="__span-31-6"><a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a>ERROR: payment failed   error_rate: 2.3%        request abc-123:
+</span><span id="__span-31-7"><a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a>order=PO-001            p95_latency: 340ms        gateway    12ms
+</span><span id="__span-31-8"><a id="__codelineno-31-8" name="__codelineno-31-8" href="#__codelineno-31-8"></a>                        requests_per_sec: 450     auth-svc    8ms
+</span><span id="__span-31-9"><a id="__codelineno-31-9" name="__codelineno-31-9" href="#__codelineno-31-9"></a>                                                  order-svc 210ms  ← yahan slow
+</span><span id="__span-31-10"><a id="__codelineno-31-10" name="__codelineno-31-10" href="#__codelineno-31-10"></a>                                                  db         45ms
+</span></code></pre></div>
+<p><strong>Kab kya use karein:</strong>
+- <strong>Metrics</strong> — "kuch galat hai" pata karne ke liye (alerting)
+- <strong>Traces</strong> — "kahan galat hai" pata karne ke liye
+- <strong>Logs</strong> — "kya galat hai" pata karne ke liye</p>
+<h2 id="92-distributed-tracing">9.2 Distributed tracing<a class="headerlink" href="#92-distributed-tracing" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>Trace ID: abc-123  (poore request ka ek ID)
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a> ├─ Span: API Gateway          [12ms]
+</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a> │   └─ Span: Auth Service     [8ms]
+</span><span id="__span-32-4"><a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a> ├─ Span: Order Service        [210ms]  ← bottleneck yahan
+</span><span id="__span-32-5"><a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a> │   ├─ Span: DB query         [180ms]  ← actually yahan
+</span><span id="__span-32-6"><a id="__codelineno-32-6" name="__codelineno-32-6" href="#__codelineno-32-6"></a> │   └─ Span: Cache lookup     [2ms]
+</span><span id="__span-32-7"><a id="__codelineno-32-7" name="__codelineno-32-7" href="#__codelineno-32-7"></a> └─ Span: Notification Service [30ms]
+</span></code></pre></div>
+<p>Tools: OpenTelemetry (standard), Jaeger, Zipkin, Datadog.</p>
+<h2 id="93-sli-slo-sla-ye-poochha-jaata-hai">9.3 SLI, SLO, SLA — ye poochha jaata hai<a class="headerlink" href="#93-sli-slo-sla-ye-poochha-jaata-hai" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Matlab</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SLI</strong></td>
+<td>Service Level <strong>Indicator</strong> — measurement</td>
+<td>"99.2% requests succeed"</td>
+</tr>
+<tr>
+<td><strong>SLO</strong></td>
+<td>Service Level <strong>Objective</strong> — internal target</td>
+<td>"99.5% requests succeed"</td>
+</tr>
+<tr>
+<td><strong>SLA</strong></td>
+<td>Service Level <strong>Agreement</strong> — customer contract, penalty ke saath</td>
+<td>"99% uptime ya refund"</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Error budget:</strong> agar SLO 99.9% hai, to 0.1% failure "allowed" hai. Wo aapka budget hai.
+Budget khatam → naye features rok do, reliability pe kaam karo.</p>
+<blockquote>
+<p><strong>Interview answer:</strong>
+"SLI is what you measure, SLO is the target you hold yourself to, and SLA is the contractual
+promise with financial consequences. The one that changes behaviour is the error budget that
+falls out of the SLO — if you've agreed 99.9%, you've also agreed that 0.1% of failures are
+acceptable, and when you've spent that budget the team stops shipping features and works on
+reliability. It turns 'quality' from an argument into a number."</p>
+</blockquote>
+<h2 id="94-qa-ke-liye-observability-ka-asli-use">9.4 QA ke liye observability ka asli use<a class="headerlink" href="#94-qa-ke-liye-observability-ka-asli-use" title="Permanent link">&para;</a></h2>
+<p><strong>Production errors = aapki test gap list.</strong></p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>Sentry mein error dikha
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>  ↓
+</span><span id="__span-33-3"><a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a>Kya humare tests ne ye pakda?
+</span><span id="__span-33-4"><a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a>  ├─ Haan → test theek hai, deploy process mein gap
+</span><span id="__span-33-5"><a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a>  └─ Nahi → YE MERA AGLA TEST CASE HAI
+</span></code></pre></div>
+<blockquote>
+<p><strong>Interview answer:</strong>
+"I treat production error tracking as the most honest input to my test backlog. My tests
+verify what we thought of; production tells me what we didn't. Every error class that shows
+up in Sentry and wasn't caught by a test becomes a test — and more usefully, I ask what
+<em>category</em> of thing we missed, because usually it's not one bug, it's a blind spot. That's
+how a bug fix becomes a process fix instead of just another test case."</p>
+</blockquote>
+<hr />
+<h1 id="10-senior-scenario-questions">10. Senior scenario questions<a class="headerlink" href="#10-senior-scenario-questions" title="Permanent link">&para;</a></h1>
+<h2 id="q1-production-mein-payment-fail-ho-raha-hai-but-api-200-return-kar-rahi-hai-debug-kaise-karoge">Q1. "Production mein payment fail ho raha hai but API 200 return kar rahi hai. Debug kaise karoge?"<a class="headerlink" href="#q1-production-mein-payment-fail-ho-raha-hai-but-api-200-return-kar-rahi-hai-debug-kaise-karoge" title="Permanent link">&para;</a></h2>
+<p><strong>Ye headline question hai.</strong> Structured answer:</p>
+<blockquote>
+<p><strong>Interview answer:</strong>
+"A 200 with a failed outcome tells me the failure is semantic, not transport — so the first
+thing I check is what the 200 actually contains. Plenty of APIs return 200 with a body like
+<code>{"status": "failed"}</code>, and a client that only checks the status code will report success.</p>
+<p>Then I work the flow in order. Was the charge actually created at the payment gateway? Their
+dashboard is the source of truth for that, not our database. If the gateway shows a
+successful charge, the money moved and our side lost it — that's the worst case and it's
+urgent. If the gateway shows no charge, we never called it, and the question moves upstream.</p>
+<p>Next I look at whether this is a partial failure. The classic shape is: charge succeeded,
+order creation threw, the exception was swallowed, and the handler still returned 200. So I
+check for an orphaned charge with no corresponding order, and whether a reversal or refund
+was issued. If neither exists, we have money taken and nothing recorded.</p>
+<p>Then I check the database directly — the payment row, its status, the order row, and whether
+the ledger entries balance. And I check whether it's a retry problem: if the client retried
+a non-idempotent POST, we may have double-charged.</p>
+<p>Finally I'd look at scope — one user or all users, one payment method or all, started at a
+particular deploy. Error tracking and the deploy timeline usually answer that in a minute.</p>
+<p>The reason I'd escalate this one immediately rather than finish investigating first is that
+every minute it continues is more affected customers."</p>
+</blockquote>
+<p><strong>Ye jawab strong kyun hai:</strong> aap layer-by-layer chal rahe ho, partial failure ka concept
+samajhte ho, aur urgency ka business sense dikha rahe ho.</p>
+<h2 id="q2-ek-bug-100-mein-se-1-baar-hota-hai-kaise-pakdoge">Q2. "Ek bug 100 mein se 1 baar hota hai. Kaise pakdoge?"<a class="headerlink" href="#q2-ek-bug-100-mein-se-1-baar-hota-hai-kaise-pakdoge" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p><strong>Interview answer:</strong>
+"One-in-a-hundred usually means a race condition, a data-dependent path, or an
+infrastructure issue like one unhealthy server behind the load balancer. I'd approach it in
+that order.</p>
+<p>For a race, I try to make it deterministic by changing timing — throttling the network,
+adding latency to a dependency, or running the action concurrently from two sessions. If
+slowing things down makes it reproducible, it's a race and I now have a reliable test.</p>
+<p>For data dependency, I compare a failing case with a passing one and look for the exact
+difference — a null field, a different status, a boundary value.</p>
+<p>For infrastructure, the giveaway is that it correlates with nothing in the application. I'd
+check whether failures cluster on one instance, which the load balancer or trace data will
+show.</p>
+<p>And I'd add instrumentation rather than keep guessing — a correlation ID and structured
+logging around the suspect path costs very little and turns the next occurrence into
+evidence instead of another anecdote."</p>
+</blockquote>
+<h2 id="q3-ek-page-slow-hai-investigate-karo">Q3. "Ek page slow hai. Investigate karo."<a class="headerlink" href="#q3-ek-page-slow-hai-investigate-karo" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p><strong>Interview answer:</strong>
+"I'd separate the three places time can go: network, server, and rendering.</p>
+<p>The network tab's timing breakdown tells me immediately which one it is. If time-to-first-byte
+is high, the server is slow and the frontend is innocent. If TTFB is fine but the page takes
+seconds to become interactive, it's rendering or JavaScript.</p>
+<p>If it's the server, I'd look at the slowest API call and then at the backend trace for that
+request. The most common cause I've seen is N+1 queries — code that looks like one operation
+but issues a database call per row, which is fine with ten records and fatal with a thousand.</p>
+<p>If it's the frontend, I'd check bundle size, whether rendering is blocked on a sequential
+chain of API calls that could run in parallel, and whether there's a large uncompressed
+asset. Lighthouse gives a fast first read on that.</p>
+<p>And I'd check whether it's slow for everyone or slow at scale — a page that's fast in staging
+with fifty records and slow in production with fifty thousand is a data-volume problem, and
+that's a test gap as much as a performance one."</p>
+</blockquote>
+<h2 id="q4-aapko-lagta-hai-bug-hai-dev-ko-nahi-deadlock-kya-karoge">Q4. "Aapko lagta hai bug hai, dev ko nahi. Deadlock. Kya karoge?"<a class="headerlink" href="#q4-aapko-lagta-hai-bug-hai-dev-ko-nahi-deadlock-kya-karoge" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p><strong>Interview answer:</strong>
+"I'd move it from opinion to evidence. First I check what the requirement or acceptance
+criteria actually says — if it's explicit, there's nothing to argue about. If it's silent,
+then this isn't a disagreement about a bug, it's an ambiguity in the requirement, and the
+right person to resolve it is the product owner, not either of us.</p>
+<p>I'd also frame the impact rather than the defect: what a user experiences, how many are
+affected, and what the support cost looks like. 'The date shows wrong' is arguable; 'a
+supplier sees a delivery date one day earlier than agreed and could ship late' isn't.</p>
+<p>If it's genuinely a judgement call and product decides it's acceptable, I'd ask for that
+decision to be recorded on the ticket, because otherwise the same argument happens again in
+three months. I'm not trying to win — I'm trying to make sure the decision was made
+deliberately and by the right person."</p>
+</blockquote>
+<h2 id="q5-aapne-kaise-pata-lagaya-ki-ek-flaky-test-actually-product-bug-tha">Q5. "Aapne kaise pata lagaya ki ek 'flaky' test actually product bug tha?"<a class="headerlink" href="#q5-aapne-kaise-pata-lagaya-ki-ek-flaky-test-actually-product-bug-tha" title="Permanent link">&para;</a></h2>
+<p>Ye aapki <strong>real story</strong> hai — poori taiyari Part 8 mein hai (Playwright doc).</p>
+<blockquote>
+<p><strong>Interview answer (short version):</strong>
+"We had a supplier acknowledgement step that failed intermittently and had been labelled
+flaky with a retry on it. I read the component source and found the input was read-only in
+that library version, so our <code>fill()</code> could never have worked — it waited thirty seconds for
+the field to become editable and then threw. It wasn't intermittent at all; it failed
+identically every run and only looked flaky because a broad try/except swallowed the
+exception and fell through to a fallback path.</p>
+<p>The fallback was picking a day from the calendar by matching text and taking the first match
+— and the calendar pads its grid with days from adjacent months sharing the same CSS class,
+so eleven of the forty-two numbers were duplicated. On most days the first match was a
+disabled past date. That's why the failure depended on today's date, and that's what made it
+look random."</p>
+</blockquote>
+<hr />
+<h1 id="11-quick-revision">11. Quick revision<a class="headerlink" href="#11-quick-revision" title="Permanent link">&para;</a></h1>
+<table>
+<thead>
+<tr>
+<th>Sawaal</th>
+<th>10-second jawab</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RCA flow</td>
+<td>Reproduce → console → network → API direct → logs → DB → root cause → verify → regression</td>
+</tr>
+<tr>
+<td>Reproduce nahi ho raha</td>
+<td>Variables identify karo: user, data, browser, timing, flag, timezone, concurrency. Phir instrument karo.</td>
+</tr>
+<tr>
+<td>Stack trace</td>
+<td>Sabse upar exception, apne code ki pehli line, <strong>"Caused by" sabse neeche = asli wajah</strong></td>
+</tr>
+<tr>
+<td>Correlation ID</td>
+<td>Test se header bhejo, fail hone pe logs mein wahi ID search karo</td>
+</tr>
+<tr>
+<td>401 vs 403</td>
+<td>Kaun ho pata nahi vs pata hai par allowed nahi</td>
+</tr>
+<tr>
+<td>CORS</td>
+<td><strong>Browser</strong> enforce karta hai, server nahi — isliye Postman mein error nahi aata</td>
+</tr>
+<tr>
+<td>Cookie flags</td>
+<td>HttpOnly (XSS), Secure (HTTPS), SameSite (CSRF)</td>
+</tr>
+<tr>
+<td>JWT payload</td>
+<td>base64 hai, <strong>encrypted nahi</strong> — sensitive data mat daalo</td>
+</tr>
+<tr>
+<td>IDOR test</td>
+<td>Doosre user ka / doosre org ka ID daalke try karo</td>
+</tr>
+<tr>
+<td>Injection red flag</td>
+<td>Response mein SQL/Mongo error dikhna = do bugs</td>
+</tr>
+<tr>
+<td>p95 vs average</td>
+<td>Average tail chhupa deta hai — 5% users ka experience</td>
+</tr>
+<tr>
+<td>Load vs stress vs soak</td>
+<td>Expected / breaking point / memory leak</td>
+</tr>
+<tr>
+<td>N+1</td>
+<td>Loop ke andar DB call — 10 records pe theek, 1000 pe timeout</td>
+</tr>
+<tr>
+<td>502 vs 504</td>
+<td>Proxy backend tak nahi pahuncha vs backend ne der lagayi</td>
+</tr>
+<tr>
+<td>Teen pillars</td>
+<td>Logs (kya) / Metrics (kitna) / Traces (kahan)</td>
+</tr>
+<tr>
+<td>SLI/SLO/SLA</td>
+<td>Measurement / internal target / customer contract</td>
+</tr>
+<tr>
+<td>Error budget</td>
+<td>SLO ka bacha hissa — khatam to features ruko, reliability pe kaam</td>
+</tr>
+<tr>
+<td>Production errors</td>
+<td><strong>Aapki test gap list</strong> — jo wahan aaya aur test mein nahi, wo agla test case</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="red-flags-ye-jawab-mat-dena">Red flags — ye jawab mat dena<a class="headerlink" href="#red-flags-ye-jawab-mat-dena" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Galat jawab</th>
+<th>Kyun galat</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"Reproduce nahi hua to close kar diya"</td>
+<td>Bug real ho sakta hai — instrument karo</td>
+</tr>
+<tr>
+<td>"Ye backend ka issue hai, mera kaam nahi"</td>
+<td>Narrowing hi aapka kaam hai</td>
+</tr>
+<tr>
+<td>"Average response time 200ms hai, theek hai"</td>
+<td>Tail chhupa rahe ho — p95 dekho</td>
+</tr>
+<tr>
+<td>"Security testing security team ka kaam hai"</td>
+<td>Access control QA ka core kaam hai</td>
+</tr>
+<tr>
+<td>"Console mein error tha par test pass ho gaya"</td>
+<td>Console errors bhi failures hain</td>
+</tr>
+<tr>
+<td>"Logs dev dekhte hain"</td>
+<td>Log padhna senior QA ki basic skill hai</td>
+</tr>
+<tr>
+<td>"Performance testing ke liye tool nahi hai"</td>
+<td>curl aur ek loop se bhi shuruat ho sakti hai</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="aakhri-baat">Aakhri baat<a class="headerlink" href="#aakhri-baat" title="Permanent link">&para;</a></h2>
+<p>Is doc ka har technical jawab tab strong hota hai jab uske saath <strong>aapka apna example</strong> ho.</p>
+<p><strong>Ratta:</strong></p>
+<blockquote>
+<p>"CORS is a browser security policy."</p>
+</blockquote>
+<p><strong>Experience:</strong></p>
+<blockquote>
+<p>"CORS is browser-enforced, which is why 'it works in Postman' doesn't mean the endpoint is
+fine — I've seen that exact confusion send a team looking at the backend when the actual fix
+was one missing entry in the preflight allow-list."</p>
+</blockquote>
+<p>Doosra jawab dene wale ko job milti hai.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/ritik-sketch" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.linkedin.com/in/ritik-chaturvedi-qa" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5m282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.indexes", "toc.follow", "search.suggest", "search.highlight", "search.share", "content.code.copy", "content.tooltips"], "search": "../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.83f73b43.min.js"></script>
+      
+    
+  </body>
+</html>
