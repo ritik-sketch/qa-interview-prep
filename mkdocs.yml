@@ -2,10 +2,9 @@ site_name: QA Engineering Notes
 site_description: Deep-dive notes on QA automation, Python, DSA and test engineering.
 site_author: Ritik Chaturvedi
 
-# TODO: apna GitHub username daalo (dono jagah "ritik" ki jagah)
-site_url: https://ritik.github.io/qa-notes/
-repo_url: https://github.com/ritik/qa-notes
-repo_name: qa-notes
+site_url: https://ritik-sketch.github.io/qa-interview-prep/
+repo_url: https://github.com/ritik-sketch/qa-interview-prep
+repo_name: qa-interview-prep
 edit_uri: ""
 
 theme:
@@ -89,7 +88,7 @@ nav:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/ritik
+      link: https://github.com/ritik-sketch
     - icon: fontawesome/brands/linkedin
-      link: https://www.linkedin.com/in/your-handle
+      link: https://www.linkedin.com/in/ritik-chaturvedi-qa
   generator: false
